@@ -111,5 +111,8 @@ test:
 pint:
 	$(APP) ./vendor/bin/pint
 
+phpstan:
+	$(APP) ./vendor/bin/phpstan analyse app config database routes tests
+
 swagger:
 	@:
