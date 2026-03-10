@@ -9,13 +9,13 @@ use Illuminate\Http\Response;
 use OpenApi\Attributes as OA;
 
 #[OA\Info(
-    title: "CRM API",
-    version: "1.0.0",
-    description: "API документация"
+    title: 'CRM API',
+    version: '1.0.0',
+    description: 'API документация'
 )]
 #[OA\Server(
-    url: "/api",
-    description: "Главный API сервер"
+    url: '/api',
+    description: 'Главный API сервер'
 )]
 abstract class Controller
 {
@@ -24,10 +24,7 @@ abstract class Controller
     /**
      * Handle a successful response.
      *
-     * @param mixed $result
-     * @param string $message
-     * @param int $code
-     * @return JsonResponse
+     * @param  mixed  $result
      */
     public function success($result, string $message, int $code = Response::HTTP_OK): JsonResponse
     {
@@ -36,16 +33,12 @@ abstract class Controller
             'data' => $result,
             'message' => $message,
         ];
+
         return response()->json($response, $code);
     }
 
     /**
      * Handle an error response.
-     *
-     * @param string $errorMessage
-     * @param array $errors
-     * @param int $code
-     * @return JsonResponse
      */
     public function error(string $errorMessage, array $errors = [], int $code = Response::HTTP_BAD_REQUEST): JsonResponse
     {
@@ -54,6 +47,7 @@ abstract class Controller
             'message' => $errorMessage,
             'errors' => $errors,
         ];
+
         return response()->json($response, $code);
     }
 }

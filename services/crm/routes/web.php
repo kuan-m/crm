@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\RouteName;
 use App\Enums\ViewName;
 use Illuminate\Support\Facades\Route;
 

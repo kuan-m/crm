@@ -6,15 +6,15 @@ use Illuminate\Foundation\Http\FormRequest;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: "CreateTicketRequest",
-    title: "Create Ticket Request",
-    required: ["name", "phone", "email", "subject", "text"],
+    schema: 'CreateTicketRequest',
+    title: 'Create Ticket Request',
+    required: ['name', 'phone', 'email', 'subject', 'text'],
     properties: [
-        new OA\Property(property: "name", type: "string", example: "Куанышбек Мыкыев"),
-        new OA\Property(property: "phone", type: "string", example: "+79654444444"),
-        new OA\Property(property: "email", type: "string", format: "email", example: "kuan@example.com"),
-        new OA\Property(property: "subject", type: "string", example: "Проблема с оплатой"),
-        new OA\Property(property: "text", type: "string", example: "Не могу оплатить заказ через сайт"),
+        new OA\Property(property: 'name', type: 'string', example: 'Куанышбек Мыкыев'),
+        new OA\Property(property: 'phone', type: 'string', example: '+79654444444'),
+        new OA\Property(property: 'email', type: 'string', format: 'email', example: 'kuan@example.com'),
+        new OA\Property(property: 'subject', type: 'string', example: 'Проблема с оплатой'),
+        new OA\Property(property: 'text', type: 'string', example: 'Не могу оплатить заказ через сайт'),
     ]
 )]
 class CreateRequest extends FormRequest

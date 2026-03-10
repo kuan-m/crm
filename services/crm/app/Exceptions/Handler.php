@@ -2,14 +2,14 @@
 
 namespace App\Exceptions;
 
-use Throwable;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Auth\AuthenticationException;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Throwable;
 
 class Handler
 {

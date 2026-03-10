@@ -16,7 +16,7 @@ class ApiInfrastructureTest extends TestCase
         Route::get('/api/test-validation-multi', function () {
             throw ValidationException::withMessages([
                 'email' => ['Required.', 'Must be a valid email.'],
-                'name'  => ['Required.'],
+                'name' => ['Required.'],
             ]);
         });
 
@@ -78,7 +78,7 @@ class ApiInfrastructureTest extends TestCase
     public function test_unauthenticated_returns_401_with_correct_shape(): void
     {
         Route::get('/api/test-auth', function () {
-            throw new AuthenticationException();
+            throw new AuthenticationException;
         });
 
         $this->getJson('/api/test-auth')
