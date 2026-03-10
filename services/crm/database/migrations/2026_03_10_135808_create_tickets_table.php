@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('tickets')) {
+        if (! Schema::hasTable('tickets')) {
             Schema::create('tickets', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('customer_id')
@@ -24,7 +24,7 @@ return new class extends Migration
                     ->default(1)
                     ->index()
                     ->comment('1 – новый, 2 – в работе, 3 – обработан');
-                    
+
                 $table->timestamp('replied_at')->nullable();
                 $table->timestamps();
             });
