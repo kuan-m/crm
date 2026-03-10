@@ -20,7 +20,7 @@ RUN apk add --no-cache \
     unzip \
     zip \
     ${PHPIZE_DEPS} \
- && docker-php-ext-install -j"$(nproc)" intl opcache pdo_mysql zip \
+ && docker-php-ext-install -j"$(nproc)" exif intl opcache pdo_mysql zip \
  && pecl install xdebug \
  && docker-php-ext-enable xdebug \
  && apk del ${PHPIZE_DEPS} \

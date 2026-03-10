@@ -13,7 +13,7 @@ RUN apk add --no-cache \
     mysql-client \
     unzip \
     zip \
- && docker-php-ext-install -j"$(nproc)" intl opcache pdo_mysql zip \
+ && docker-php-ext-install -j"$(nproc)" exif intl opcache pdo_mysql zip \
  && rm -f /usr/local/etc/php/php.ini /usr/local/etc/php/conf.d/xdebug.ini \
  && rm -f /usr/local/etc/php-fpm.d/www.conf \
  && addgroup -g "${APP_GID}" -S "${APP_GROUP}" \
