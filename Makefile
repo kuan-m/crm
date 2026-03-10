@@ -130,7 +130,7 @@ phpstan:
 	$(APP) ./vendor/bin/phpstan analyse app config database routes tests
 
 swagger:
-	$(APP) sh -lc 'cd /var/www/crm && mkdir -p storage/api-docs && ./vendor/bin/openapi --format yaml -o storage/api-docs/openapi.yaml app routes'
+	$(APP) sh -lc 'cd /var/www/crm && mkdir -p public/api-docs && ./vendor/bin/openapi --format yaml -o public/api-docs/openapi.yaml app routes'
 
 # === Сидеры ===
 
