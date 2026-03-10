@@ -1,4 +1,7 @@
-.PHONY: dev-init prod-init dev-up prod-up dev-down prod-down dev-migrate prod-migrate test swagger pint phpstan logs-app logs-app-prod dev-shell prod-shell dev-prepare prod-prepare dev-build prod-build dev-rebuild prod-rebuild
+.PHONY: dev prod dev-init prod-init dev-up prod-up dev-down prod-down dev-migrate prod-migrate test swagger pint phpstan logs-app logs-app-prod dev-shell prod-shell dev-prepare prod-prepare dev-build prod-build dev-rebuild prod-rebuild
+
+dev: dev-up
+prod: prod-up
 
 # === Енвы ===
 HOST_UID  ?= 1000
@@ -128,3 +131,11 @@ phpstan:
 
 swagger:
 	$(APP) sh -lc 'cd /var/www/crm && mkdir -p storage/api-docs && ./vendor/bin/openapi --format yaml -o storage/api-docs/openapi.yaml app routes'
+
+# === Сидеры ===
+
+dev-seed:
+	$(APP) php artisan db:seed --force
+
+prod-seed:
+	$(APP_PROD) php artisan db:seed --force
