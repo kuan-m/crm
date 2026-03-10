@@ -5,6 +5,7 @@ namespace App\Modules\Ticket\Providers;
 use App\Modules\Ticket\Contracts\ITicketRepository;
 use App\Modules\Ticket\Repositories\EloquentTicketRepository;
 use App\Modules\Ticket\Repositories\InMemTicketRepository;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class TicketServiceProvider extends ServiceProvider
@@ -12,19 +13,14 @@ class TicketServiceProvider extends ServiceProvider
     /**
      * Register services.
      */
-    public function register()
+    public function register(): void
     {
-        if ($this->app->runningUnitTests()) {
-            $this->app->bind(
-                ITicketRepository::class,
-                InMemTicketRepository::class
-            );
-        } else {
-            $this->app->bind(
-                ITicketRepository::class,
-                EloquentTicketRepository::class
-            );
-        }
+        $this->app->bind(
+            ITicketRepository::class,
+            $this->app->runningUnitTests()
+                ? InMemTicketRepository::class
+                : EloquentTicketRepository::class
+        );
     }
 
     /**
@@ -32,8 +28,12 @@ class TicketServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadRoutesFrom(
-            __DIR__.'/../Routes/api.php'
-        );
+        Route::middleware('api')
+            ->prefix('api')
+            ->group(function () {
+                $this->loadRoutesFrom(
+                    __DIR__.'/../Routes/api.php'
+                );
+            });
     }
 }
