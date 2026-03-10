@@ -15,7 +15,6 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: "email", type: "string", format: "email", example: "kuan@example.com"),
         new OA\Property(property: "subject", type: "string", example: "Проблема с оплатой"),
         new OA\Property(property: "text", type: "string", example: "Не могу оплатить заказ через сайт"),
-        new OA\Property(property: "attachments", type: "array", items: new OA\Items(type: "string", format: "binary"))
     ]
 )]
 class CreateRequest extends FormRequest

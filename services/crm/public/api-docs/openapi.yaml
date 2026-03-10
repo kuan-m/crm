@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  title: 'CRM API'
+  description: 'API документация'
+  version: 1.0.0
+servers:
+  -
+    url: /api
+    description: 'Главный API сервер'
+paths:
+  /v1/tickets:
+    post:
+      tags:
+        - Tickets
+      summary: 'Создать новую заявку'
+      operationId: f3a38897c0e1a1339c44e01df39a032c
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTicketRequest'
+      responses:
+        '201':
+          description: 'Заявка успешно создана'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Ticket created successfully' }
+                type: object
+        '422':
+          description: 'Ошибка валидации'
+components:
+  schemas:
+    CreateTicketRequest:
+      title: 'Create Ticket Request'
+      required:
+        - name
+        - phone
+        - email
+        - subject
+        - text
+      properties:
+        name:
+          type: string
+          example: 'Куанышбек Мыкыев'
+        phone:
+          type: string
+          example: '+79654444444'
+        email:
+          type: string
+          format: email
+          example: kuan@example.com
+        subject:
+          type: string
+          example: 'Проблема с оплатой'
+        text:
+          type: string
+          example: 'Не могу оплатить заказ через сайт'
+      type: object
+tags:
+  -
+    name: Tickets
+    description: Tickets
