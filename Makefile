@@ -109,6 +109,12 @@ dev-shell:
 prod-shell:
 	$(APP_PROD) sh
 
+dev-composer-i:
+	$(APP) composer install
+
+prod-composer-i:
+	$(APP_PROD) composer install
+
 # === Тесты/Код стайл ===
 
 test:
