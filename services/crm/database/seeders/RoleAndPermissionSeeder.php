@@ -24,13 +24,13 @@ class RoleAndPermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::findOrCreate($permission);
+            Permission::findOrCreate($permission, 'web');
         }
 
-        $role = Role::findOrCreate('manager');
+        $role = Role::findOrCreate('manager', 'web');
         $role->givePermissionTo(Permission::all());
 
-        $adminRole = Role::findOrCreate('admin');
+        $adminRole = Role::findOrCreate('admin', 'web');
         $adminRole->givePermissionTo(Permission::all());
     }
 }

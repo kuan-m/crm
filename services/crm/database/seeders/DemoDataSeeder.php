@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Customer;
-use App\Models\Ticket;
+use App\Modules\Customer\Models\Customer;
+use App\Modules\Ticket\Models\Ticket;
 use Illuminate\Database\Seeder;
 
 class DemoDataSeeder extends Seeder

@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\Ticket\Models;
 
+use App\Modules\Customer\Models\Customer;
+use Database\Factories\TicketFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,6 +24,11 @@ class Ticket extends Model implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\TicketFactory> */
     use HasFactory, InteractsWithMedia;
+
+    protected static function newFactory()
+    {
+        return TicketFactory::new();
+    }
 
     public function registerMediaCollections(): void
     {
