@@ -88,8 +88,14 @@ prod-down:
 dev-migrate:
 	$(APP) php artisan migrate --force
 
+dev-rollback:
+	$(APP) php artisan migrate:rollback
+
 prod-migrate:
 	$(APP_PROD) php artisan migrate --force
+
+prod-rollback:
+	$(APP_PROD) php artisan migrate:rollback
 
 logs-app:
 	$(DC) logs -f app
