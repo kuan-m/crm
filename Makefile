@@ -80,7 +80,6 @@ dev-up: infra/development/.env services/crm/.env
 	$(DC) up -d
 	$(MAKE) dev-prepare
 	$(APP) sh -lc 'test -f $(APP_PATH)/vendor/autoload.php || composer install'
-	$(APP) php $(APP_PATH)/artisan optimize:clear
 
 prod-up: infra/production/.env services/crm/.env
 	$(DC_PROD) up -d
@@ -190,3 +189,23 @@ dev-seed:
 
 prod-seed:
 	$(APP_PROD) php $(APP_PATH)/artisan db:seed --force
+
+# === Clear cache ===
+
+dev-clear:
+	$(APP) php $(APP_PATH)/artisan optimize:clear
+	$(APP) php $(APP_PATH)/artisan cache:clear
+	$(APP) php $(APP_PATH)/artisan config:clear
+	$(APP) php $(APP_PATH)/artisan route:clear
+	$(APP) php $(APP_PATH)/artisan view:clear
+	$(APP) php $(APP_PATH)/artisan event:clear
+	$(APP) php $(APP_PATH)/artisan clear-compiled
+
+prod-clear:
+	$(APP_PROD) php $(APP_PATH)/artisan optimize:clear
+	$(APP_PROD) php $(APP_PATH)/artisan cache:clear
+	$(APP_PROD) php $(APP_PATH)/artisan config:clear
+	$(APP_PROD) php $(APP_PATH)/artisan route:clear
+	$(APP_PROD) php $(APP_PATH)/artisan view:clear
+	$(APP_PROD) php $(APP_PATH)/artisan event:clear
+	$(APP_PROD) php $(APP_PATH)/artisan clear-compiled
