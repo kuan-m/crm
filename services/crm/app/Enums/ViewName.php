@@ -9,4 +9,5 @@ enum ViewName: string
     case WIDGET = 'ticket.widget';
     case LOGIN = 'manager.login';
     case DASHBOARD = 'manager.dashboard';
+    case MANAGER_TICKETS_LIST = 'manager.tickets.list';
 }

@@ -8,14 +8,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1/tickets')
     ->group(function () {
-        Route::get('/statistics', StatisticsController::class)
-            ->name('api.v1.tickets.statistics');
+        Route::middleware(['web', 'auth'])->group(function () {
+            Route::get('/statistics', StatisticsController::class)
+                ->name('api.v1.tickets.statistics');
+
+            Route::get('/{id}', ShowController::class)
+                ->name('api.v1.tickets.show');
+        });
 
         Route::post('/', CreateController::class)
             ->name('api.v1.tickets.create');
-
-        Route::get('/{id}', ShowController::class)
-            ->name('api.v1.tickets.show');
 
         Route::post('/{ticket}/files', UploadFileController::class)
             ->name('api.v1.tickets.files.upload');

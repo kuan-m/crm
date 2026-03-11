@@ -4,7 +4,9 @@ namespace App\Modules\Ticket\Repositories;
 
 use App\Modules\Ticket\Contracts\ITicketRepository;
 use App\Modules\Ticket\DTO\CreateTicketDTO;
+use App\Modules\Ticket\Filters\TicketListFilter;
 use App\Modules\Ticket\Models\Ticket;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class EloquentTicketRepository implements ITicketRepository
 {
@@ -42,5 +44,15 @@ class EloquentTicketRepository implements ITicketRepository
             'week' => Ticket::query()->createdThisWeek()->count(),
             'month' => Ticket::query()->createdThisMonth()->count(),
         ];
+    }
+
+    public function paginateWithFilters(array $filters, int $perPage = 15): LengthAwarePaginator
+    {
+        $query = Ticket::query()->with('customer');
+
+        return (new TicketListFilter($filters))
+            ->apply($query)
+            ->latest('id')
+            ->paginate($perPage);
     }
 }

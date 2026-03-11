@@ -6,6 +6,9 @@ use App\Modules\Ticket\Contracts\ITicketRepository;
 use App\Modules\Ticket\DTO\CreateTicketDTO;
 use App\Modules\Ticket\Exceptions\TicketNotFound;
 use App\Modules\Ticket\Models\Ticket;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\LengthAwarePaginator as PaginationLengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class InMemTicketRepository implements ITicketRepository
 {
@@ -47,5 +50,16 @@ class InMemTicketRepository implements ITicketRepository
             'week' => fake()->numberBetween(10, 50),
             'month' => fake()->numberBetween(50, 200),
         ];
+    }
+
+    public function paginateWithFilters(array $filters, int $perPage = 15): LengthAwarePaginator
+    {
+        return new PaginationLengthAwarePaginator(
+            [],
+            100,
+            $perPage,
+            1,
+            ['path' => Paginator::resolveCurrentPath()]
+        );
     }
 }

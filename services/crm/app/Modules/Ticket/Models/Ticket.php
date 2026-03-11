@@ -5,7 +5,9 @@ namespace App\Modules\Ticket\Models;
 use App\Enums\DiskName;
 use App\Modules\Customer\Models\Customer;
 use App\Modules\Ticket\Enums\TicketMediaCollection;
+use App\Modules\Ticket\Enums\TicketStatus;
 use Database\Factories\TicketFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,7 +21,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property int $customer_id
  * @property string $subject
  * @property string $text
- * @property string $status
+ * @property TicketStatus $status
  * @property \Illuminate\Support\Carbon|null $replied_at
  */
 class Ticket extends Model implements HasMedia
@@ -54,7 +56,7 @@ class Ticket extends Model implements HasMedia
      */
     protected $casts = [
         'replied_at' => 'datetime',
-        'status' => \App\Modules\Ticket\Enums\TicketStatus::class,
+        'status' => TicketStatus::class,
     ];
 
     /**
@@ -63,6 +65,16 @@ class Ticket extends Model implements HasMedia
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute<string, never>
+     */
+    protected function statusLabel(): Attribute
+    {
+        return Attribute::get(
+            get: fn () => $this->status->label()
+        );
     }
 
     /**

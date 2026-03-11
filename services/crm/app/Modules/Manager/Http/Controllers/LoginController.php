@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Modules\User\Http\Controllers\V1;
+namespace App\Modules\Manager\Http\Controllers;
 
 use App\Enums\RouteName;
 use App\Enums\ViewName;
 use App\Http\Controllers\Controller;
+use App\Modules\Manager\Http\Requests\LoginRequest;
 use App\Modules\User\Contracts\IAuthService;
-use App\Modules\User\Http\Requests\V1\LoginRequest;
 use Illuminate\Http\Request;
 
 class LoginController extends Controller

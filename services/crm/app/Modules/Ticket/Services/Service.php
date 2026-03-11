@@ -9,6 +9,7 @@ use App\Modules\Ticket\DTO\CreateTicketDTO;
 use App\Modules\Ticket\Enums\TicketMediaCollection;
 use App\Modules\Ticket\Exceptions\TooManyTicketsException;
 use App\Modules\Ticket\Models\Ticket;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class Service
@@ -65,5 +66,10 @@ class Service
     public function getStatistics(): array
     {
         return $this->ticketRepo->getStatistics();
+    }
+
+    public function getList(array $filters): LengthAwarePaginator
+    {
+        return $this->ticketRepo->paginateWithFilters($filters);
     }
 }
