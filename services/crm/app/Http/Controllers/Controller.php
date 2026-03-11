@@ -95,7 +95,7 @@ abstract class Controller
             'message' => $message,
         ];
 
-        return response()->json($response, $code);
+        return response()->json($response, $code, [], JSON_UNESCAPED_UNICODE);
     }
 
     /**
@@ -109,6 +109,6 @@ abstract class Controller
             'errors' => $errors,
         ];
 
-        return response()->json($response, $code);
+        return response()->json($response, $code, [], JSON_UNESCAPED_UNICODE);
     }
 }

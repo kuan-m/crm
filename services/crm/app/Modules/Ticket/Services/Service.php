@@ -37,7 +37,9 @@ class Service
                 $dto->name,
             );
 
-            return $this->ticketRepo->create($customer->id, $dto);
+            $ticket = $this->ticketRepo->create($customer->id, $dto);
+
+            return $ticket->setRelation('customer', $customer);
         });
     }
 
