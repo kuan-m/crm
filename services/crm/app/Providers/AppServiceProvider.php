@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Modules\File\Providers\FileServiceProvider;
 use App\Modules\Ticket\Providers\TicketServiceProvider;
+use App\Modules\User\Providers\UserServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -18,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
         );
         $this->app->register(
             FileServiceProvider::class,
+        );
+        $this->app->register(
+            UserServiceProvider::class,
         );
     }
 

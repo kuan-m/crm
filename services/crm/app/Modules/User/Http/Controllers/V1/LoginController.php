@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Modules\User\Http\Controllers\V1;
+
+use App\Enums\RouteName;
+use App\Enums\ViewName;
+use App\Http\Controllers\Controller;
+use App\Modules\User\Contracts\IAuthService;
+use App\Modules\User\Http\Requests\V1\LoginRequest;
+use Illuminate\Http\Request;
+
+class LoginController extends Controller
+{
+    public function __construct(
+        protected IAuthService $authService
+    ) {}
+
+    public function showForm()
+    {
+        return view(ViewName::LOGIN->value);
+    }
+
+    public function login(LoginRequest $request)
+    {
+        $this->authService->attemptLogin(
+            $request->validated(),
+            $request->boolean('remember')
+        );
+
+        $request->session()->regenerate();
+
+        return redirect()->intended(route(RouteName::DASHBOARD->value));
+    }
+
+    public function logout(Request $request)
+    {
+        $this->authService->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route(RouteName::LOGIN->value);
+    }
+}
