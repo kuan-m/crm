@@ -22,4 +22,9 @@ class EloquentTicketRepository implements ITicketRepository
             ->where('created_at', '>=', now()->subDay())
             ->exists();
     }
+
+    public function findOrFail(int $id): Ticket
+    {
+        return Ticket::findOrFail($id);
+    }
 }

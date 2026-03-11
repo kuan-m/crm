@@ -4,6 +4,7 @@ namespace App\Modules\Ticket\Repositories;
 
 use App\Modules\Ticket\Contracts\ITicketRepository;
 use App\Modules\Ticket\DTO\CreateTicketDTO;
+use App\Modules\Ticket\Exceptions\TicketNotFound;
 use App\Modules\Ticket\Models\Ticket;
 
 class InMemTicketRepository implements ITicketRepository
@@ -20,5 +21,17 @@ class InMemTicketRepository implements ITicketRepository
     public function hasRecentTicket(string $email, string $phone): bool
     {
         return fake()->boolean();
+    }
+
+    public function findOrFail(int $id): Ticket
+    {
+        if (fake()->boolean(80)) {
+            return Ticket::factory()->make([
+                'id' => $id,
+                'customer_id' => fake()->numberBetween(1, 10),
+            ]);
+        }
+
+        throw new TicketNotFound("Ticket {$id} not found");
     }
 }

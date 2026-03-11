@@ -60,6 +60,15 @@ return [
             'report' => false,
         ],
 
+        'tickets_attachments' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/tickets_attachments'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage/tickets_attachments',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
     ],
 
     /*

@@ -10,4 +10,6 @@ interface ITicketRepository
     public function create(int $customerId, CreateTicketDTO $dto): Ticket;
 
     public function hasRecentTicket(string $email, string $phone): bool;
+
+    public function findOrFail(int $id): Ticket;
 }

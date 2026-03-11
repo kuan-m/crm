@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Modules\File\Providers\FileServiceProvider;
 use App\Modules\Ticket\Providers\TicketServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
@@ -13,7 +14,10 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(
-            TicketServiceProvider::class
+            TicketServiceProvider::class,
+        );
+        $this->app->register(
+            FileServiceProvider::class,
         );
     }
 

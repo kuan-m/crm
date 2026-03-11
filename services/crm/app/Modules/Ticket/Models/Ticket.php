@@ -2,7 +2,9 @@
 
 namespace App\Modules\Ticket\Models;
 
+use App\Enums\DiskName;
 use App\Modules\Customer\Models\Customer;
+use App\Modules\Ticket\Enums\TicketMediaCollection;
 use Database\Factories\TicketFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -32,8 +34,8 @@ class Ticket extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('attachments')
-            ->useDisk('public');
+        $this->addMediaCollection(TicketMediaCollection::ATTACHMENTS->value)
+            ->useDisk(DiskName::TICKETS_ATTACHMENTS->value);
     }
 
     /**

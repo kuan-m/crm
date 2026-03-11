@@ -35,6 +35,48 @@ paths:
           description: 'Ошибка валидации'
         '429':
           description: 'Слишком много заявок'
+  '/v1/tickets/{ticket}/files':
+    post:
+      tags:
+        - Tickets
+      summary: 'Загрузить файлы к заявке'
+      operationId: dcf05e70adb96e99e818e7f815f72a41
+      parameters:
+        -
+          name: ticket
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadFileRequest'
+      responses:
+        '201':
+          description: 'Файлы успешно загружены'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { type: array, items: { $ref: '#/components/schemas/FileResource' } }
+                  message: { type: string, example: 'Файлы успешно загружены' }
+                type: object
+        '404':
+          description: 'Заявка не найдена'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: 'Ошибка валидации'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
 components:
   schemas:
     ValidationErrorResponse:
@@ -112,6 +154,38 @@ components:
         message:
           type: string
           example: 'Операция выполнена успешно'
+      type: object
+    UploadFileRequest:
+      required:
+        - files
+      properties:
+        'files[]':
+          description: 'Массив загружаемых файлов'
+          type: array
+          items:
+            type: string
+            format: binary
+      type: object
+    FileResource:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: invoice
+        file_name:
+          type: string
+          example: invoice.pdf
+        mime_type:
+          type: string
+          example: application/pdf
+        size:
+          type: integer
+          example: 204800
+        url:
+          type: string
+          example: 'https://example.com/storage/1/invoice.pdf'
       type: object
     TicketStatus:
       description: 'ID статуса: 1 - Новый, 2 - В работе, 3 - Обработан'
