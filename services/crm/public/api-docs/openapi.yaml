@@ -27,12 +27,108 @@ paths:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Ticket created successfully' }
+                  success: { type: boolean, example: true }
+                  data: { $ref: '#/components/schemas/TicketResource' }
+                  message: { type: string, example: 'Заявка успешно создана' }
                 type: object
         '422':
           description: 'Ошибка валидации'
+        '429':
+          description: 'Слишком много заявок'
 components:
   schemas:
+    ValidationErrorResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 'Validation failed.'
+        errors:
+          type: object
+          example:
+            email:
+              - 'Введите корректный адрес электронной почты.'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      type: object
+    TooManyRequestsResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 'Too many requests.'
+      type: object
+    NotFoundResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 'Resource not found.'
+      type: object
+    UnauthorizedResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 'Unauthorized Request.'
+      type: object
+    ForbiddenResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Forbidden.
+      type: object
+    ServerErrorResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 'An unexpected error occurred.'
+        details:
+          type: string
+          example: null
+          nullable: true
+      type: object
+    BaseResponse:
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Операция выполнена успешно'
+      type: object
+    TicketStatus:
+      description: 'ID статуса: 1 - Новый, 2 - В работе, 3 - Обработан'
+      type: integer
+      example: 1
+      enum:
+        - 1
+        - 2
+        - 3
+    TicketStatusLabel:
+      description: 'Человекочитаемый статус'
+      type: string
+      example: Новый
+      enum:
+        - New
+        - InProcess
+        - Processed
     CreateTicketRequest:
       title: 'Create Ticket Request'
       required:
@@ -58,6 +154,25 @@ components:
         text:
           type: string
           example: 'Не могу оплатить заказ через сайт'
+      type: object
+    TicketResource:
+      properties:
+        id:
+          type: integer
+          example: 1
+        subject:
+          type: string
+          example: 'Проблема с оплатой'
+        text:
+          type: string
+          example: 'Не могу оплатить заказ'
+        status:
+          $ref: '#/components/schemas/TicketStatus'
+        status_label:
+          $ref: '#/components/schemas/TicketStatusLabel'
+        created_at:
+          type: string
+          format: date-time
       type: object
 tags:
   -

@@ -35,7 +35,11 @@ class CreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-
+            'name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'regex:/^\+[1-9]\d{7,14}$/'],
+            'email' => ['required', 'email:rfc,dns', 'max:255'],
+            'subject' => ['required', 'string', 'max:255'],
+            'text' => ['required', 'string', 'max:5000'],
         ];
     }
 
@@ -47,7 +51,16 @@ class CreateRequest extends FormRequest
     public function messages(): array
     {
         return [
-
+            'name.required' => 'Имя обязательно для заполнения.',
+            'name.max' => 'Имя не должно превышать 255 символов.',
+            'phone.required' => 'Номер телефона обязателен.',
+            'phone.regex' => 'Телефон должен быть в формате E.164, например: +79654444444.',
+            'email.required' => 'Электронная почта обязательна.',
+            'email.email' => 'Введите корректный адрес электронной почты.',
+            'subject.required' => 'Укажите тему заявки.',
+            'subject.max' => 'Тема не должна превышать 255 символов.',
+            'text.required' => 'Текст заявки обязателен.',
+            'text.max' => 'Текст заявки не должен превышать 5000 символов.',
         ];
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Modules\Ticket\Providers;
 
+use App\Modules\Customer\Contracts\ICustomerRepository;
+use App\Modules\Customer\Repositories\EloquentCustomerRepository;
 use App\Modules\Ticket\Contracts\ITicketRepository;
 use App\Modules\Ticket\Repositories\EloquentTicketRepository;
 use App\Modules\Ticket\Repositories\InMemTicketRepository;
@@ -20,6 +22,11 @@ class TicketServiceProvider extends ServiceProvider
             $this->app->runningUnitTests()
                 ? InMemTicketRepository::class
                 : EloquentTicketRepository::class
+        );
+
+        $this->app->bind(
+            ICustomerRepository::class,
+            EloquentCustomerRepository::class
         );
     }
 

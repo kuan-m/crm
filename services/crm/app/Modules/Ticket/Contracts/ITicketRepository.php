@@ -2,4 +2,12 @@
 
 namespace App\Modules\Ticket\Contracts;
 
-interface ITicketRepository {}
+use App\Modules\Ticket\DTO\CreateTicketDTO;
+use App\Modules\Ticket\Models\Ticket;
+
+interface ITicketRepository
+{
+    public function create(int $customerId, CreateTicketDTO $dto): Ticket;
+
+    public function hasRecentTicket(string $email, string $phone): bool;
+}
