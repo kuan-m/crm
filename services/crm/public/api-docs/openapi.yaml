@@ -35,6 +35,49 @@ paths:
           description: 'Ошибка валидации'
         '429':
           description: 'Слишком много заявок'
+  '/v1/tickets/{id}':
+    get:
+      tags:
+        - Tickets
+      summary: 'Просмотреть детали заявки'
+      operationId: 3f02f44bf8876dc0f2c5eca0a3062549
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Детали заявки'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { $ref: '#/components/schemas/TicketResource' }
+                  message: { type: string, example: 'Детали заявки' }
+                type: object
+        '404':
+          description: 'Заявка не найдена'
+  /v1/tickets/statistics:
+    get:
+      tags:
+        - Tickets
+      summary: 'Получить статистику заявок (сутки, неделя, месяц)'
+      operationId: c9b80bd894de5e5f17039b07df78ac55
+      responses:
+        '200':
+          description: Статистика
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { $ref: '#/components/schemas/StatisticsResource' }
+                  message: { type: string, example: 'Статистика заявок' }
+                type: object
   '/v1/tickets/{ticket}/files':
     post:
       tags:
@@ -155,6 +198,21 @@ components:
           type: string
           example: 'Операция выполнена успешно'
       type: object
+    CustomerResource:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Иван Иванов'
+        email:
+          type: string
+          example: ivan@example.com
+        phone:
+          type: string
+          example: '+79991234567'
+      type: object
     UploadFileRequest:
       required:
         - files
@@ -229,6 +287,18 @@ components:
           type: string
           example: 'Не могу оплатить заказ через сайт'
       type: object
+    StatisticsResource:
+      properties:
+        today:
+          type: integer
+          example: 5
+        week:
+          type: integer
+          example: 25
+        month:
+          type: integer
+          example: 100
+      type: object
     TicketResource:
       properties:
         id:
@@ -247,6 +317,16 @@ components:
         created_at:
           type: string
           format: date-time
+        customer:
+          oneOf:
+            -
+              $ref: '#/components/schemas/CustomerResource'
+          nullable: true
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileResource'
+          nullable: true
       type: object
 tags:
   -

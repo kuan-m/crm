@@ -54,4 +54,14 @@ class Service
             TicketMediaCollection::ATTACHMENTS->value
         );
     }
+
+    public function show(int $id): Ticket
+    {
+        return $this->ticketRepo->show($id);
+    }
+
+    public function getStatistics(): array
+    {
+        return $this->ticketRepo->getStatistics();
+    }
 }

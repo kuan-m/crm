@@ -54,6 +54,7 @@ class Ticket extends Model implements HasMedia
      */
     protected $casts = [
         'replied_at' => 'datetime',
+        'status' => \App\Modules\Ticket\Enums\TicketStatus::class,
     ];
 
     /**
@@ -62,5 +63,29 @@ class Ticket extends Model implements HasMedia
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    /**
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     */
+    public function scopeCreatedToday($query): void
+    {
+        $query->where('created_at', '>=', now()->startOfDay());
+    }
+
+    /**
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     */
+    public function scopeCreatedThisWeek($query): void
+    {
+        $query->where('created_at', '>=', now()->startOfWeek());
+    }
+
+    /**
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     */
+    public function scopeCreatedThisMonth($query): void
+    {
+        $query->where('created_at', '>=', now()->startOfMonth());
     }
 }

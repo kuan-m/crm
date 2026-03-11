@@ -34,4 +34,18 @@ class InMemTicketRepository implements ITicketRepository
 
         throw new TicketNotFound("Ticket {$id} not found");
     }
+
+    public function show(int $id): Ticket
+    {
+        return $this->findOrFail($id);
+    }
+
+    public function getStatistics(): array
+    {
+        return [
+            'today' => fake()->numberBetween(0, 10),
+            'week' => fake()->numberBetween(10, 50),
+            'month' => fake()->numberBetween(50, 200),
+        ];
+    }
 }

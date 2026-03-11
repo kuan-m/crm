@@ -27,4 +27,20 @@ class EloquentTicketRepository implements ITicketRepository
     {
         return Ticket::findOrFail($id);
     }
+
+    public function show(int $id): Ticket
+    {
+        return Ticket::query()
+            ->with(['customer', 'media'])
+            ->findOrFail($id);
+    }
+
+    public function getStatistics(): array
+    {
+        return [
+            'today' => Ticket::query()->createdToday()->count(),
+            'week' => Ticket::query()->createdThisWeek()->count(),
+            'month' => Ticket::query()->createdThisMonth()->count(),
+        ];
+    }
 }

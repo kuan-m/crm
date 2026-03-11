@@ -12,4 +12,8 @@ interface ITicketRepository
     public function hasRecentTicket(string $email, string $phone): bool;
 
     public function findOrFail(int $id): Ticket;
+
+    public function show(int $id): Ticket;
+
+    public function getStatistics(): array;
 }
