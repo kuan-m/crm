@@ -3,6 +3,7 @@
 namespace App\Modules\Ticket\Contracts;
 
 use App\Modules\Ticket\DTO\CreateTicketDTO;
+use App\Modules\Ticket\Enums\TicketStatus;
 use App\Modules\Ticket\Models\Ticket;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -19,4 +20,6 @@ interface ITicketRepository
     public function getStatistics(): array;
 
     public function paginateWithFilters(array $filters, int $perPage = 15): LengthAwarePaginator;
+
+    public function updateStatus(int $id, TicketStatus $status): bool;
 }

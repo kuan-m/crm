@@ -4,6 +4,7 @@ namespace App\Modules\Ticket\Repositories;
 
 use App\Modules\Ticket\Contracts\ITicketRepository;
 use App\Modules\Ticket\DTO\CreateTicketDTO;
+use App\Modules\Ticket\Enums\TicketStatus;
 use App\Modules\Ticket\Filters\TicketListFilter;
 use App\Modules\Ticket\Models\Ticket;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -54,5 +55,10 @@ class EloquentTicketRepository implements ITicketRepository
             ->apply($query)
             ->latest('id')
             ->paginate($perPage);
+    }
+
+    public function updateStatus(int $id, TicketStatus $status): bool
+    {
+        return Ticket::where('id', $id)->update(['status' => $status->value]) > 0;
     }
 }

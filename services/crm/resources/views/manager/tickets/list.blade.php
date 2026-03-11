@@ -37,16 +37,38 @@
                             </td>
                             <td class="p-4">
                                 @php
-                                    $statusClasses = match($ticket->status->value) {
+                                    $allStatuses = \App\Modules\Ticket\Enums\TicketStatus::cases();
+                                    $currentStatusValue = $ticket->status->value;
+                                    
+                                    $statusClasses = match($currentStatusValue) {
                                         \App\Modules\Ticket\Enums\TicketStatus::New->value => 'bg-blue-50 text-blue-600 border-blue-200',
                                         \App\Modules\Ticket\Enums\TicketStatus::InProcess->value => 'bg-amber-50 text-amber-600 border-amber-200',
                                         \App\Modules\Ticket\Enums\TicketStatus::Processed->value => 'bg-emerald-50 text-emerald-600 border-emerald-200',
                                         default => 'bg-slate-50 text-slate-600 border-slate-200'
                                     };
                                 @endphp
-                                <span class="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-medium border {{ $statusClasses }}">
-                                    {{ $ticket->status_label }}
-                                </span>
+                                <div class="relative inline-block w-full max-w-[130px]">
+                                    <select onchange="window.updateTicketStatus({{ $ticket->id }}, this.value, this)"
+                                            class="w-full appearance-none pl-2 pr-6 py-1 rounded-md text-[11px] font-medium border {{ $statusClasses }} focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors cursor-pointer"
+                                            data-original-value="{{ $currentStatusValue }}">
+                                        @foreach($allStatuses as $statusOption)
+                                            @php
+                                                $optionStyle = match($statusOption->value) {
+                                                    1 => 'color: #1d4ed8; background-color: #eff6ff; font-weight: 600;',
+                                                    2 => 'color: #b45309; background-color: #fffbeb; font-weight: 600;',
+                                                    3 => 'color: #047857; background-color: #ecfdf5; font-weight: 600;',
+                                                    default => 'color: #334155; background-color: #f8fafc; font-weight: 600;',
+                                                };
+                                            @endphp
+                                            <option value="{{ $statusOption->value }}" style="{{ $optionStyle }}" @selected($statusOption->value === $currentStatusValue)>
+                                                {{ $statusOption->label() }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1 text-slate-400">
+                                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
                             </td>
                             <td class="p-4 pr-6 text-right">
                                 <button type="button" 

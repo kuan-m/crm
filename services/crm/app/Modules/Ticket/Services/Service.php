@@ -7,6 +7,8 @@ use App\Modules\File\Services\Service as FileService;
 use App\Modules\Ticket\Contracts\ITicketRepository;
 use App\Modules\Ticket\DTO\CreateTicketDTO;
 use App\Modules\Ticket\Enums\TicketMediaCollection;
+use App\Modules\Ticket\Enums\TicketStatus;
+use App\Modules\Ticket\Exceptions\TicketNotFound;
 use App\Modules\Ticket\Exceptions\TooManyTicketsException;
 use App\Modules\Ticket\Models\Ticket;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -71,5 +73,14 @@ class Service
     public function getList(array $filters): LengthAwarePaginator
     {
         return $this->ticketRepo->paginateWithFilters($filters);
+    }
+
+    public function changeStatus(int $id, TicketStatus $status): void
+    {
+        $updated = $this->ticketRepo->updateStatus($id, $status);
+
+        if (! $updated) {
+            throw new TicketNotFound('Заявка не найдена или статус не обновлен');
+        }
     }
 }

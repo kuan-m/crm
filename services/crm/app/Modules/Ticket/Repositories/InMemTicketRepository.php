@@ -4,6 +4,7 @@ namespace App\Modules\Ticket\Repositories;
 
 use App\Modules\Ticket\Contracts\ITicketRepository;
 use App\Modules\Ticket\DTO\CreateTicketDTO;
+use App\Modules\Ticket\Enums\TicketStatus;
 use App\Modules\Ticket\Exceptions\TicketNotFound;
 use App\Modules\Ticket\Models\Ticket;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -61,5 +62,10 @@ class InMemTicketRepository implements ITicketRepository
             1,
             ['path' => Paginator::resolveCurrentPath()]
         );
+    }
+
+    public function updateStatus(int $id, TicketStatus $status): bool
+    {
+        return fake()->boolean(50);
     }
 }

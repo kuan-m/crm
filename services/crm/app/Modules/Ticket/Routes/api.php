@@ -3,6 +3,7 @@
 use App\Modules\Ticket\Http\Controllers\V1\CreateController;
 use App\Modules\Ticket\Http\Controllers\V1\ShowController;
 use App\Modules\Ticket\Http\Controllers\V1\StatisticsController;
+use App\Modules\Ticket\Http\Controllers\V1\StatusController;
 use App\Modules\Ticket\Http\Controllers\V1\UploadFileController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,9 @@ Route::prefix('v1/tickets')
 
             Route::get('/{id}', ShowController::class)
                 ->name('api.v1.tickets.show');
+
+            Route::patch('/{id}/status', StatusController::class)
+                ->name('api.v1.tickets.status.update');
         });
 
         Route::post('/', CreateController::class)

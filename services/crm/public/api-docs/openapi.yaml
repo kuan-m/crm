@@ -78,6 +78,62 @@ paths:
                   data: { $ref: '#/components/schemas/StatisticsResource' }
                   message: { type: string, example: 'Статистика заявок' }
                 type: object
+  '/v1/tickets/{id}/status':
+    patch:
+      tags:
+        - Tickets
+      summary: 'Обновить статус заявки'
+      operationId: 6136433ab6c2e4384eb1583de123e56c
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID заявки'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                status:
+                  description: 'ID нового статуса (1 - Новая, 2 - В процессе, 3 - Обработана)'
+                  type: integer
+                  enum: [1, 2, 3]
+              type: object
+      responses:
+        '200':
+          description: 'Статус заявки успешно обновлен'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  message: { type: string, example: 'Статус заявки обновлен' }
+                type: object
+        '422':
+          description: 'Ошибка валидации'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '404':
+          description: 'Заявка не найдена'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '401':
+          description: Неавторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        -
+          sanctum: []
   '/v1/tickets/{ticket}/files':
     post:
       tags:

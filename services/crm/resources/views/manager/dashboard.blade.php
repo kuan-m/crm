@@ -11,14 +11,23 @@
                 <p class="text-sm text-slate-500 mt-1">Управление входящими обращениями клиентов</p>
             </div>
             
-            <div class="flex gap-4">
+            <div class="flex flex-wrap gap-4">
                 <div class="bg-white px-5 py-3 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
                     <div class="bg-blue-50 p-2 rounded-lg text-blue-600">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     </div>
                     <div>
-                        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Всего</p>
+                        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">За месяц</p>
                         <p class="text-xl font-bold text-slate-800 leading-none mt-1" id="stat-all">...</p>
+                    </div>
+                </div>
+                <div class="bg-white px-5 py-3 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="bg-emerald-50 p-2 rounded-lg text-emerald-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">За неделю</p>
+                        <p class="text-xl font-bold text-emerald-600 leading-none mt-1" id="stat-week">...</p>
                     </div>
                 </div>
                 <div class="bg-white px-5 py-3 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
@@ -156,9 +165,30 @@
                     
                     <!-- Footer -->
                     <div class="bg-slate-50/50 px-6 py-4 flex items-center justify-between border-t border-slate-100 rounded-b-2xl">
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border bg-white text-slate-700 border-slate-200 shadow-sm" id="modal-ticket-status">
-                            Статус
-                        </span>
+                        <div class="relative inline-block w-[150px]">
+                            <select id="modal-ticket-status-select" 
+                                    onchange="window.updateTicketStatus(document.getElementById('modal-ticket-id').dataset.id, this.value, this)"
+                                    class="w-full appearance-none pl-3 pr-8 py-1.5 rounded-md text-xs font-bold border focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors cursor-pointer text-slate-700 bg-white border-slate-200">
+                                @php
+                                    $allStatuses = \App\Modules\Ticket\Enums\TicketStatus::cases();
+                                    
+                                    function getOptionStyle(int $val): string {
+                                        return match($val) {
+                                            1 => 'color: #1d4ed8; background-color: #eff6ff; font-weight: 600;', // blue
+                                            2 => 'color: #b45309; background-color: #fffbeb; font-weight: 600;', // amber
+                                            3 => 'color: #047857; background-color: #ecfdf5; font-weight: 600;', // emerald
+                                            default => 'color: #334155; background-color: #f8fafc; font-weight: 600;', // slate
+                                        };
+                                    }
+                                @endphp
+                                @foreach($allStatuses as $statusOption)
+                                    <option value="{{ $statusOption->value }}" style="{{ getOptionStyle($statusOption->value) }}">{{ $statusOption->label() }}</option>
+                                @endforeach
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-slate-400">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
                         <button type="button" onclick="closeModal()" class="inline-flex justify-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-colors">
                             Закрыть
                         </button>
@@ -188,25 +218,8 @@
                 const stats = response.data.data;
                 
                 document.getElementById('stat-today').textContent = stats.today || 0;
+                document.getElementById('stat-week').textContent = stats.week || 0;
                 document.getElementById('stat-all').textContent = stats.month || 0; 
-                // Changed "All" label to "За месяц" in UI earlier or here we assume Month is the main total.
-                // If you want to show Week instead, you can bind stats.week. Let's make the "Total" display the month.
-                document.querySelector('#stat-all').previousElementSibling.textContent = 'За месяц';
-
-                // Add Week if needed, or replace Today with Week.
-                const weekStat = document.createElement('div');
-                weekStat.className = 'bg-white px-5 py-3 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4';
-                weekStat.innerHTML = `
-                    <div class="bg-emerald-50 p-2 rounded-lg text-emerald-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                    </div>
-                    <div>
-                        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">За неделю</p>
-                        <p class="text-xl font-bold text-emerald-600 leading-none mt-1">${stats.week || 0}</p>
-                    </div>
-                `;
-                document.querySelector('.flex.gap-4').insertBefore(weekStat, document.querySelector('.flex.gap-4').lastElementChild);
-
             } catch (error) {
                 console.error('Failed to fetch statistics:', error);
             }
@@ -269,7 +282,9 @@
             document.getElementById('modal-content-area').classList.add('hidden');
             
             // Reset fields
-            document.getElementById('modal-ticket-id').textContent = `#${id}`;
+            const idElement = document.getElementById('modal-ticket-id');
+            idElement.textContent = `#${id}`;
+            idElement.dataset.id = id;
             document.getElementById('modal-ticket-subject').textContent = 'Загрузка...';
 
             try {
@@ -287,15 +302,15 @@
                 document.getElementById('modal-ticket-date').textContent = d.toLocaleString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
                 
                 document.getElementById('modal-ticket-text').textContent = ticket.text;
-                document.getElementById('modal-ticket-status').textContent = ticket.status_label;
                 
-                // Color status badge
-                const statusBadge = document.getElementById('modal-ticket-status');
-                if(ticket.status === 1) {
-                    statusBadge.className = 'inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold border bg-blue-50 text-blue-700 border-blue-200';
-                } else {
-                    statusBadge.className = 'inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold border bg-slate-50 text-slate-700 border-slate-200';
-                }
+                // Color status badge select
+                const statusSelect = document.getElementById('modal-ticket-status-select');
+                statusSelect.value = ticket.status;
+                statusSelect.dataset.originalValue = ticket.status;
+                
+                // Reset select classes before applying new ones
+                statusSelect.className = 'w-full appearance-none pl-3 pr-8 py-1.5 rounded-md text-xs font-bold border focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors cursor-pointer ' + getStatusClass(ticket.status);
+
 
                 // Attachments
                 const attContainer = document.getElementById('modal-attachments-container');
@@ -385,5 +400,72 @@
                 closeModal();
             }
         });
+        // Helper for status styling
+        function getStatusClass(statusValue) {
+            // Using integer values from TicketStatus Enum
+            switch(parseInt(statusValue)) {
+                case 1: return 'bg-blue-50 text-blue-600 border-blue-200'; // New
+                case 2: return 'bg-amber-50 text-amber-600 border-amber-200'; // InProcess
+                case 3: return 'bg-emerald-50 text-emerald-600 border-emerald-200'; // Processed
+                default: return 'bg-slate-50 text-slate-600 border-slate-200';
+            }
+        }
+
+        // 4. Update Ticket Status
+        async function updateTicketStatus(id, newStatus, selectElement) {
+            const originalValue = selectElement.dataset.originalValue;
+            
+            // Revert changes visually fast if they select the same one
+            if(newStatus == originalValue) return;
+
+            // Simple visual loading logic
+            const originalClasses = selectElement.className;
+            selectElement.classList.add('opacity-50', 'pointer-events-none');
+
+            try {
+                await axios.patch(`{{ url('/api/v1/tickets') }}/${id}/status`, { status: newStatus });
+                
+                // Success: apply new styles and save state
+                selectElement.dataset.originalValue = newStatus;
+                
+                // Base classes without color
+                const baseClasses = 'w-full appearance-none pl-2 pr-6 py-1 rounded-md text-[11px] font-medium border focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors cursor-pointer ';
+                // Modal uses slightly different base classes (larger py/text)
+                const isModal = selectElement.id === 'modal-ticket-status-select';
+                
+                if (isModal) {
+                    selectElement.className = 'w-full appearance-none pl-3 pr-8 py-1.5 rounded-md text-xs font-bold border focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors cursor-pointer ' + getStatusClass(newStatus);
+                    
+                    // Sync the list view natively without sending a search request
+                    const listSelects = document.querySelectorAll(`select[onchange*="updateTicketStatus(${id},"]`);
+                    listSelects.forEach(sel => {
+                        sel.value = newStatus;
+                        sel.dataset.originalValue = newStatus;
+                        sel.className = baseClasses + getStatusClass(newStatus);
+                    });
+                } else {
+                    selectElement.className = baseClasses + getStatusClass(newStatus);
+                    
+                    // Sync the modal view natively if it happens to be open for this ticket
+                    const modalSelect = document.getElementById('modal-ticket-status-select');
+                    const modalTicketId = document.getElementById('modal-ticket-id')?.dataset?.id;
+                    if (modalSelect && modalTicketId == id) {
+                        modalSelect.value = newStatus;
+                        modalSelect.dataset.originalValue = newStatus;
+                        modalSelect.className = 'w-full appearance-none pl-3 pr-8 py-1.5 rounded-md text-xs font-bold border focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors cursor-pointer ' + getStatusClass(newStatus);
+                    }
+                }
+
+
+
+            } catch (error) {
+                console.error('Failed to update status:', error);
+                alert(error.response?.data?.message || 'Ошибка при обновлении статуса');
+                // Revert
+                selectElement.value = originalValue;
+            } finally {
+                selectElement.classList.remove('opacity-50', 'pointer-events-none');
+            }
+        }
     </script>
 @endpush
