@@ -4,14 +4,20 @@ dev: dev-up
 prod: prod-up
 
 # === Енвы ===
+
 HOST_UID  ?= 1000
 HOST_GID  ?= 1000
+
+APP_PATH  ?= /var/www/crm
+
 DC        = docker compose --env-file infra/development/.env -f infra/development/docker-compose.yml
 DC_PROD   = docker compose --env-file infra/production/.env -f infra/production/docker-compose.yml
+
 APP       = $(DC) exec app
 APP_PROD  = $(DC_PROD) exec app
 
-# === Хелперы функции ===
+
+# === Хелперы ===
 
 infra/development/.env:
 	@if [ ! -f infra/development/.env ]; then \
@@ -28,7 +34,8 @@ services/crm/.env:
 		cp services/crm/.env.example services/crm/.env; \
 	fi
 
-# === Инициализация ===
+
+# === Build ===
 
 dev-build: infra/development/.env
 	$(DC) build app
@@ -42,45 +49,75 @@ dev-rebuild: infra/development/.env
 prod-rebuild: infra/production/.env
 	$(DC_PROD) build --no-cache app
 
+
+# === Init ===
+
 dev-init: infra/development/.env services/crm/.env
 	$(DC) build
 	$(DC) up -d
 	$(MAKE) dev-prepare
 	$(APP) composer install
-	$(APP) php artisan optimize:clear
-	$(APP) php artisan key:generate --force
-	$(APP) php artisan migrate --seed --force
+	$(APP) php $(APP_PATH)/artisan optimize:clear
+	$(APP) php $(APP_PATH)/artisan key:generate --force
+	$(APP) php $(APP_PATH)/artisan migrate --seed --force
 
 prod-init: infra/production/.env services/crm/.env
 	$(DC_PROD) build
 	$(DC_PROD) up -d
 	$(MAKE) prod-prepare
 	$(APP_PROD) composer install --no-dev --optimize-autoloader
-	$(APP_PROD) php artisan optimize:clear
-	$(APP_PROD) php artisan key:generate --force
-	$(APP_PROD) php artisan migrate --force
-	$(APP_PROD) php artisan config:cache
-	$(APP_PROD) php artisan route:cache
-	$(APP_PROD) php artisan view:cache
+	$(APP_PROD) php $(APP_PATH)/artisan optimize:clear
+	$(APP_PROD) php $(APP_PATH)/artisan key:generate --force
+	$(APP_PROD) php $(APP_PATH)/artisan migrate --force
+	$(APP_PROD) php $(APP_PATH)/artisan config:cache
+	$(APP_PROD) php $(APP_PATH)/artisan route:cache
+	$(APP_PROD) php $(APP_PATH)/artisan view:cache
 
-# === Управление ===
+
+# === Up ===
 
 dev-up: infra/development/.env services/crm/.env
 	$(DC) up -d
 	$(MAKE) dev-prepare
-	$(APP) sh -lc 'test -f /var/www/crm/vendor/autoload.php || composer install'
-	$(APP) php artisan optimize:clear
+	$(APP) sh -lc 'test -f $(APP_PATH)/vendor/autoload.php || composer install'
+	$(APP) php $(APP_PATH)/artisan optimize:clear
 
 prod-up: infra/production/.env services/crm/.env
 	$(DC_PROD) up -d
 	$(MAKE) prod-prepare
-	$(APP_PROD) sh -lc 'test -f /var/www/crm/vendor/autoload.php || composer install --no-dev --optimize-autoloader'
+	$(APP_PROD) sh -lc 'test -f $(APP_PATH)/vendor/autoload.php || composer install --no-dev --optimize-autoloader'
+
+
+# === Prepare ===
 
 dev-prepare:
-	$(DC) exec --user root app sh -lc 'mkdir -p /var/www/crm/storage/logs /var/www/crm/storage/framework/cache/data /var/www/crm/storage/framework/sessions /var/www/crm/storage/framework/views /var/www/crm/bootstrap/cache /var/www/crm/vendor && chown -R $(HOST_UID):$(HOST_GID) /var/www/crm/storage /var/www/crm/bootstrap/cache /var/www/crm/vendor'
+	$(DC) exec --user root app sh -lc 'mkdir -p \
+	$(APP_PATH)/storage/logs \
+	$(APP_PATH)/storage/framework/cache/data \
+	$(APP_PATH)/storage/framework/sessions \
+	$(APP_PATH)/storage/framework/views \
+	$(APP_PATH)/bootstrap/cache \
+	$(APP_PATH)/vendor && \
+	chown -R $(HOST_UID):$(HOST_GID) \
+	$(APP_PATH)/storage \
+	$(APP_PATH)/bootstrap/cache \
+	$(APP_PATH)/vendor'
 
 prod-prepare:
-	$(DC_PROD) exec --user root app sh -lc 'mkdir -p /var/www/crm/storage/logs /var/www/crm/storage/framework/cache/data /var/www/crm/storage/framework/sessions /var/www/crm/storage/framework/views /var/www/crm/bootstrap/cache /var/www/crm/vendor && chown -R $(HOST_UID):$(HOST_GID) /var/www/crm/storage /var/www/crm/bootstrap/cache /var/www/crm/vendor'
+	$(DC_PROD) exec --user root app sh -lc 'mkdir -p \
+	$(APP_PATH)/storage/logs \
+	$(APP_PATH)/storage/framework/cache/data \
+	$(APP_PATH)/storage/framework/sessions \
+	$(APP_PATH)/storage/framework/views \
+	$(APP_PATH)/bootstrap/cache \
+	$(APP_PATH)/vendor && \
+	chown -R $(HOST_UID):$(HOST_GID) \
+	$(APP_PATH)/storage \
+	$(APP_PATH)/bootstrap/cache \
+	$(APP_PATH)/vendor'
+
+
+# === Down ===
 
 dev-down:
 	$(DC) down
@@ -88,17 +125,23 @@ dev-down:
 prod-down:
 	$(DC_PROD) down
 
+
+# === Migrate ===
+
 dev-migrate:
-	$(APP) php artisan migrate --force
+	$(APP) php $(APP_PATH)/artisan migrate --force
 
 dev-rollback:
-	$(APP) php artisan migrate:rollback
+	$(APP) php $(APP_PATH)/artisan migrate:rollback
 
 prod-migrate:
-	$(APP_PROD) php artisan migrate --force
+	$(APP_PROD) php $(APP_PATH)/artisan migrate --force
 
 prod-rollback:
-	$(APP_PROD) php artisan migrate:rollback
+	$(APP_PROD) php $(APP_PATH)/artisan migrate:rollback
+
+
+# === Logs ===
 
 logs-app:
 	$(DC) logs -f app
@@ -106,11 +149,17 @@ logs-app:
 logs-app-prod:
 	$(DC_PROD) logs -f app nginx cloudflared
 
+
+# === Shell ===
+
 dev-shell:
 	$(APP) sh
 
 prod-shell:
 	$(APP_PROD) sh
+
+
+# === Composer ===
 
 dev-composer-i:
 	$(APP) composer install
@@ -118,24 +167,26 @@ dev-composer-i:
 prod-composer-i:
 	$(APP_PROD) composer install
 
-# === Тесты/Код стайл ===
+
+# === Tests ===
 
 test:
-	$(APP) php artisan test
+	$(APP) php $(APP_PATH)/artisan test
 
 pint:
-	$(APP) ./vendor/bin/pint
+	$(APP) $(APP_PATH)/vendor/bin/pint
 
 phpstan:
-	$(APP) ./vendor/bin/phpstan analyse app config database routes tests
+	$(APP) $(APP_PATH)/vendor/bin/phpstan analyse app config database routes tests
 
 swagger:
-	$(APP) sh -lc 'cd /var/www/crm && mkdir -p public/api-docs && ./vendor/bin/openapi --format yaml -o public/api-docs/openapi.yaml app routes'
+	$(APP) sh -lc 'cd $(APP_PATH) && mkdir -p public/api-docs && ./vendor/bin/openapi --format yaml -o public/api-docs/openapi.yaml app routes'
 
-# === Сидеры ===
+
+# === Seed ===
 
 dev-seed:
-	$(APP) php artisan db:seed --force
+	$(APP) php $(APP_PATH)/artisan db:seed --force
 
 prod-seed:
-	$(APP_PROD) php artisan db:seed --force
+	$(APP_PROD) php $(APP_PATH)/artisan db:seed --force
