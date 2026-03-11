@@ -2,12 +2,14 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Throwable;
 
@@ -22,11 +24,21 @@ class Handler
                     'message' => 'Unauthorized Request.',
                 ], Response::HTTP_UNAUTHORIZED),
 
+                $e instanceof AuthorizationException => response()->json([
+                    'success' => false,
+                    'message' => 'Forbidden.',
+                ], Response::HTTP_FORBIDDEN),
+
                 $e instanceof ValidationException => response()->json([
                     'success' => false,
                     'message' => 'Validation failed.',
                     'errors' => $e->errors(),
                 ], Response::HTTP_UNPROCESSABLE_ENTITY),
+
+                $e instanceof TooManyRequestsHttpException => response()->json([
+                    'success' => false,
+                    'message' => 'Too many requests.',
+                ], Response::HTTP_TOO_MANY_REQUESTS),
 
                 $e instanceof NotFoundHttpException => response()->json([
                     'success' => false,

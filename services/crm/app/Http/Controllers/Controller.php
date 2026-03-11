@@ -17,6 +17,67 @@ use OpenApi\Attributes as OA;
     url: '/api',
     description: 'Главный API сервер'
 )]
+
+// --- Общие схемы ответов ---
+
+#[OA\Schema(
+    schema: 'ValidationErrorResponse',
+    properties: [
+        new OA\Property(property: 'success', type: 'boolean', example: false),
+        new OA\Property(property: 'message', type: 'string', example: 'Validation failed.'),
+        new OA\Property(
+            property: 'errors',
+            type: 'object',
+            example: ['email' => ['Введите корректный адрес электронной почты.']],
+            additionalProperties: new OA\AdditionalProperties(
+                type: 'array',
+                items: new OA\Items(type: 'string')
+            )
+        ),
+    ]
+)]
+
+#[OA\Schema(
+    schema: 'TooManyRequestsResponse',
+    properties: [
+        new OA\Property(property: 'success', type: 'boolean', example: false),
+        new OA\Property(property: 'message', type: 'string', example: 'Too many requests.'),
+    ]
+)]
+
+#[OA\Schema(
+    schema: 'NotFoundResponse',
+    properties: [
+        new OA\Property(property: 'success', type: 'boolean', example: false),
+        new OA\Property(property: 'message', type: 'string', example: 'Resource not found.'),
+    ]
+)]
+
+#[OA\Schema(
+    schema: 'UnauthorizedResponse',
+    properties: [
+        new OA\Property(property: 'success', type: 'boolean', example: false),
+        new OA\Property(property: 'message', type: 'string', example: 'Unauthorized Request.'),
+    ]
+)]
+
+#[OA\Schema(
+    schema: 'ForbiddenResponse',
+    properties: [
+        new OA\Property(property: 'success', type: 'boolean', example: false),
+        new OA\Property(property: 'message', type: 'string', example: 'Forbidden.'),
+    ]
+)]
+
+#[OA\Schema(
+    schema: 'ServerErrorResponse',
+    properties: [
+        new OA\Property(property: 'success', type: 'boolean', example: false),
+        new OA\Property(property: 'message', type: 'string', example: 'An unexpected error occurred.'),
+        new OA\Property(property: 'details', type: 'string', nullable: true, example: null),
+    ]
+)]
+
 abstract class Controller
 {
     use AuthorizesRequests, ValidatesRequests;
