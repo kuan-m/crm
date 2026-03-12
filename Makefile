@@ -99,11 +99,13 @@ dev-prepare:
 	$(APP_PATH)/storage/framework/sessions \
 	$(APP_PATH)/storage/framework/views \
 	$(APP_PATH)/bootstrap/cache \
-	$(APP_PATH)/vendor && \
+	$(APP_PATH)/vendor \
+	$(APP_PATH)/public && \
 	chown -R $(HOST_UID):$(HOST_GID) \
 	$(APP_PATH)/storage \
 	$(APP_PATH)/bootstrap/cache \
 	$(APP_PATH)/vendor \
+	$(APP_PATH)/public \
 	$(APP_PATH)/.env'
 
 prod-prepare:
@@ -113,11 +115,13 @@ prod-prepare:
 	$(APP_PATH)/storage/framework/sessions \
 	$(APP_PATH)/storage/framework/views \
 	$(APP_PATH)/bootstrap/cache \
-	$(APP_PATH)/vendor && \
+	$(APP_PATH)/vendor \
+	$(APP_PATH)/public && \
 	chown -R $(HOST_UID):$(HOST_GID) \
 	$(APP_PATH)/storage \
 	$(APP_PATH)/bootstrap/cache \
 	$(APP_PATH)/vendor \
+	$(APP_PATH)/public \
 	$(APP_PATH)/.env'
 
 
