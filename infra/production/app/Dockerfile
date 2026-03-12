@@ -5,6 +5,11 @@ ARG APP_UID
 ARG APP_GID
 FROM ${PHP_IMAGE} AS app
 
+ARG APP_USER
+ARG APP_GROUP
+ARG APP_UID
+ARG APP_GID
+
 RUN apk add --no-cache \
     bash \
     git \
