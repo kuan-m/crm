@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\RouteName;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Middleware;
 
