@@ -300,7 +300,7 @@
         // Дата
         const date = new Date(ticket.created_at);
         document.getElementById('sDate').textContent = date.toLocaleString('ru-RU', {
-            day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
+            day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', timeZone: 'UTC'
         });
 
         // Вложения
