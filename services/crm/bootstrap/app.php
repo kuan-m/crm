@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
         $middleware->redirectTo(
-            guests: RouteName::LOGIN->value
+            guests: '/manager/login'
         );
     })
     ->withExceptions(function (Illuminate\Foundation\Configuration\Exceptions $exceptions): void {
