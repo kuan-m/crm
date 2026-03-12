@@ -302,12 +302,12 @@
                 document.getElementById('modal-customer-phone').textContent = ticket.customer.phone;
                 
                 // Format date roughly if needed, assuming API sends ISO string
-                 const d = new Date(ticket.created_at);
-                document.getElementById('modal-ticket-date').textContent = d.toLocaleString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
+                const d = new Date(ticket.created_at);
+                document.getElementById('modal-ticket-date').textContent = d.toLocaleString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', timeZone: 'UTC'}).replace(',', '');
                 
                 if (ticket.replied_at) {
                     const rd = new Date(ticket.replied_at);
-                    document.getElementById('modal-ticket-replied-date').textContent = rd.toLocaleString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
+                    document.getElementById('modal-ticket-replied-date').textContent = rd.toLocaleString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', timeZone: 'UTC'}).replace(',', '');
                 } else {
                     document.getElementById('modal-ticket-replied-date').textContent = '—';
                 }
@@ -442,7 +442,7 @@
                 
                 let repliedDateStr = null;
                 if (repliedAt) {
-                    repliedDateStr = new Date(repliedAt).toLocaleString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
+                    repliedDateStr = new Date(repliedAt).toLocaleString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', timeZone: 'UTC'}).replace(',', '');
                 }
                 
                 // Base classes without color
