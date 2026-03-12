@@ -48,9 +48,9 @@ services:
       DB_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - ../../services/crm:/var/www/crm
-      - crm_prod_vendor:/var/www/crm/vendor
-      - crm_prod_storage:/var/www/crm/storage
-      - crm_prod_bootstrap_cache:/var/www/crm/bootstrap/cache
+      - ../../services/crm/vendor:/var/www/crm/vendor
+      - ../../services/crm/storage:/var/www/crm/storage
+      - ../../services/crm/bootstrap/cache:/var/www/crm/bootstrap/cache
     depends_on:
       mysql:
         condition: service_healthy
@@ -75,8 +75,8 @@ services:
     volumes:
       - ../../services/crm:/var/www/crm:ro
       - crm_prod_vendor:/var/www/crm/vendor:ro
-      - crm_prod_storage:/var/www/crm/storage:ro
-      - crm_prod_bootstrap_cache:/var/www/crm/bootstrap/cache:ro
+      - ../../services/crm/storage:/var/www/crm/storage:ro
+      - ../../services/crm/bootstrap/cache:/var/www/crm/bootstrap/cache:ro
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     healthcheck:
       test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1/healthz || exit 1"]
