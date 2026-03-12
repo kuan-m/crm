@@ -7,6 +7,7 @@ use App\Enums\ViewName;
 use App\Http\Controllers\Controller;
 use App\Modules\Manager\Http\Requests\LoginRequest;
 use App\Modules\User\Contracts\IAuthService;
+use Auth;
 use Illuminate\Http\Request;
 
 class LoginController extends Controller
@@ -17,6 +18,10 @@ class LoginController extends Controller
 
     public function showForm()
     {
+        if (Auth::check()) {
+            return redirect()->route(RouteName::DASHBOARD->value);
+        }
+
         return view(ViewName::LOGIN->value);
     }
 

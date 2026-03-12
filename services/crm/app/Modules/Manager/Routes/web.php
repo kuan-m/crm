@@ -6,10 +6,8 @@ use App\Modules\Manager\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('manager')->group(function () {
-    Route::middleware('guest')->group(function () {
-        Route::get('/login', [LoginController::class, 'showForm'])->name(RouteName::LOGIN->value);
-        Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:5,1');
-    });
+    Route::get('/login', [LoginController::class, 'showForm'])->name(RouteName::LOGIN->value);
+    Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:5,1');
 
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name(RouteName::DASHBOARD->value);
