@@ -1,0 +1,15 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+
+    paths:
+        - app/
+        - database/
+        - tests/
+
+    # Level 9 is the highest level
+    level: 5
+
+    excludePaths:
+        - ./*/*/FileToBeExcluded.php
