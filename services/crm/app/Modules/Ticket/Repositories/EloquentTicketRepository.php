@@ -57,8 +57,22 @@ class EloquentTicketRepository implements ITicketRepository
             ->paginate($perPage);
     }
 
-    public function updateStatus(int $id, TicketStatus $status): bool
+    public function updateStatus(int $id, TicketStatus $status): array
     {
-        return Ticket::where('id', $id)->update(['status' => $status->value]) > 0;
+        $ticket = Ticket::find($id);
+
+        if (! $ticket) {
+            return [false, null];
+        }
+
+        if ($status === TicketStatus::Processed) {
+            $ticket->markAsProcessed();
+        } else {
+            $ticket->status = $status;
+        }
+
+        $updated = $ticket->save();
+
+        return [$updated, $ticket->replied_at];
     }
 }

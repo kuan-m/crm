@@ -143,6 +143,10 @@
                                     <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Дата</span>
                                     <span class="text-slate-600" id="modal-ticket-date">--</span>
                                 </div>
+                                <div>
+                                    <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Дата ответа</span>
+                                    <span class="text-slate-600 font-medium text-emerald-600" id="modal-ticket-replied-date">--</span>
+                                </div>
                             </div>
 
                             <!-- Description -->
@@ -301,6 +305,13 @@
                  const d = new Date(ticket.created_at);
                 document.getElementById('modal-ticket-date').textContent = d.toLocaleString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
                 
+                if (ticket.replied_at) {
+                    const rd = new Date(ticket.replied_at);
+                    document.getElementById('modal-ticket-replied-date').textContent = rd.toLocaleString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
+                } else {
+                    document.getElementById('modal-ticket-replied-date').textContent = '—';
+                }
+                
                 document.getElementById('modal-ticket-text').textContent = ticket.text;
                 
                 // Color status badge select
@@ -423,19 +434,54 @@
             selectElement.classList.add('opacity-50', 'pointer-events-none');
 
             try {
-                await axios.patch(`{{ url('/api/v1/tickets') }}/${id}/status`, { status: newStatus });
+                const response = await axios.patch(`{{ url('/api/v1/tickets') }}/${id}/status`, { status: newStatus });
+                const repliedAt = response.data.data?.replied_at;
                 
                 // Success: apply new styles and save state
                 selectElement.dataset.originalValue = newStatus;
+                
+                let repliedDateStr = null;
+                if (repliedAt) {
+                    repliedDateStr = new Date(repliedAt).toLocaleString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
+                }
                 
                 // Base classes without color
                 const baseClasses = 'w-full appearance-none pl-2 pr-6 py-1 rounded-md text-[11px] font-medium border focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors cursor-pointer ';
                 // Modal uses slightly different base classes (larger py/text)
                 const isModal = selectElement.id === 'modal-ticket-status-select';
                 
+                const updateTableRepliedNode = (ticketId, dStr) => {
+                    const listSelects = document.querySelectorAll(`select[onchange*="updateTicketStatus(${ticketId},"]`);
+                    listSelects.forEach(sel => {
+                        const td = sel.closest('tr').querySelector('td:first-child');
+                        if (td) {
+                            let rNode = td.querySelector(`#ticket-replied-${ticketId}`);
+                            if (dStr) {
+                                if (!rNode) {
+                                    rNode = document.createElement('div');
+                                    rNode.id = `ticket-replied-${ticketId}`;
+                                    rNode.className = 'text-[11px] text-emerald-600 font-medium mt-1 inline-flex items-center gap-1 bg-emerald-50 px-1.5 py-0.5 rounded';
+                                    td.appendChild(rNode);
+                                }
+                                rNode.textContent = 'Дата ответа ' + dStr;
+                            } else if (rNode) {
+                               // Should we remove it if no longer processed? Current logic doesn't clear the replied_at date in DB, but just in case.
+                               // We keep it as is if dStr=null, usually API will return the existing repliedAt.
+                            }
+                        }
+                    });
+                };
+                
+                updateTableRepliedNode(id, repliedDateStr);
+
                 if (isModal) {
                     selectElement.className = 'w-full appearance-none pl-3 pr-8 py-1.5 rounded-md text-xs font-bold border focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors cursor-pointer ' + getStatusClass(newStatus);
                     
+                    const modalRepliedNode = document.getElementById('modal-ticket-replied-date');
+                    if (modalRepliedNode && document.getElementById('modal-ticket-id')?.dataset?.id == id) {
+                        modalRepliedNode.textContent = repliedDateStr ? repliedDateStr : '—';
+                    }
+
                     // Sync the list view natively without sending a search request
                     const listSelects = document.querySelectorAll(`select[onchange*="updateTicketStatus(${id},"]`);
                     listSelects.forEach(sel => {
@@ -453,6 +499,9 @@
                         modalSelect.value = newStatus;
                         modalSelect.dataset.originalValue = newStatus;
                         modalSelect.className = 'w-full appearance-none pl-3 pr-8 py-1.5 rounded-md text-xs font-bold border focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors cursor-pointer ' + getStatusClass(newStatus);
+                        
+                        const modalRepliedNode = document.getElementById('modal-ticket-replied-date');
+                        if (modalRepliedNode) modalRepliedNode.textContent = repliedDateStr ? repliedDateStr : '—';
                     }
                 }
 

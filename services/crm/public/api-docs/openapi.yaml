@@ -111,6 +111,7 @@ paths:
               schema:
                 properties:
                   success: { type: boolean, example: true }
+                  data: { properties: { replied_at: { type: string, format: date-time, example: '2026-03-12T12:00:00Z', nullable: true } }, type: object }
                   message: { type: string, example: 'Статус заявки обновлен' }
                 type: object
         '422':
@@ -373,6 +374,10 @@ components:
         created_at:
           type: string
           format: date-time
+        replied_at:
+          type: string
+          format: date-time
+          nullable: true
         customer:
           oneOf:
             -

@@ -41,7 +41,7 @@ class Ticket extends Model implements HasMedia
     }
 
     /**
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'customer_id',
@@ -99,5 +99,11 @@ class Ticket extends Model implements HasMedia
     public function scopeCreatedThisMonth($query): void
     {
         $query->where('created_at', '>=', now()->startOfMonth());
+    }
+
+    public function markAsProcessed(): void
+    {
+        $this->status = TicketStatus::Processed;
+        $this->replied_at = $this->replied_at ?? now();
     }
 }

@@ -25,7 +25,7 @@ class Customer extends Model
     }
 
     /**
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'name',

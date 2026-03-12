@@ -24,6 +24,11 @@
                             <td class="p-4 pl-6">
                                 <div class="font-medium text-slate-800">#{{ $ticket->id }}</div>
                                 <div class="text-xs text-slate-400 mt-0.5">{{ $ticket->created_at->format('d.m.Y H:i') }}</div>
+                                @if($ticket->replied_at)
+                                <div id="ticket-replied-{{ $ticket->id }}" class="text-[11px] text-emerald-600 font-medium mt-1 inline-flex items-center gap-1 bg-emerald-50 px-1.5 py-0.5 rounded">
+                                    Дата ответа {{ $ticket->replied_at->format('d.m.Y H:i') }}
+                                </div>
+                                @endif
                             </td>
                             <td class="p-4">
                                 <div class="font-medium text-slate-800">{{ $ticket->customer->name }}</div>

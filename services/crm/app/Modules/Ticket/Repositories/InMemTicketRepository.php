@@ -64,8 +64,11 @@ class InMemTicketRepository implements ITicketRepository
         );
     }
 
-    public function updateStatus(int $id, TicketStatus $status): bool
+    /**
+     * @return array{0: bool, 1: ?\Illuminate\Support\Carbon}
+     */
+    public function updateStatus(int $id, TicketStatus $status): array
     {
-        return fake()->boolean(50);
+        return [fake()->boolean(50), fake()->boolean() ? now() : null];
     }
 }

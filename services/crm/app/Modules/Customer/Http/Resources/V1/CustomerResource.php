@@ -15,15 +15,21 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'phone', type: 'string', example: '+79991234567'),
     ]
 )]
+/**
+ * @mixin \App\Modules\Customer\Models\Customer
+ */
 class CustomerResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        /** @var \App\Modules\Customer\Models\Customer $resource */
+        $resource = $this->resource;
+
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
-            'phone' => $this->phone,
+            'id' => $resource->id,
+            'name' => $resource->name,
+            'email' => $resource->email,
+            'phone' => $resource->phone,
         ];
     }
 }

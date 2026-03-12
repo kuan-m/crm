@@ -17,17 +17,23 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'url', type: 'string', example: 'https://example.com/storage/1/invoice.pdf'),
     ]
 )]
+/**
+ * @mixin \Spatie\MediaLibrary\MediaCollections\Models\Media
+ */
 class FileResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        /** @var \Spatie\MediaLibrary\MediaCollections\Models\Media $resource */
+        $resource = $this->resource;
+
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'file_name' => $this->file_name,
-            'mime_type' => $this->mime_type,
-            'size' => $this->size,
-            'url' => $this->getUrl(),
+            'id' => $resource->id,
+            'name' => $resource->name,
+            'file_name' => $resource->file_name,
+            'mime_type' => $resource->mime_type,
+            'size' => $resource->size,
+            'url' => $resource->getUrl(),
         ];
     }
 }

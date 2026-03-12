@@ -21,5 +21,5 @@ interface ITicketRepository
 
     public function paginateWithFilters(array $filters, int $perPage = 15): LengthAwarePaginator;
 
-    public function updateStatus(int $id, TicketStatus $status): bool;
+    public function updateStatus(int $id, TicketStatus $status): array;
 }

@@ -2,8 +2,8 @@
 
 namespace App\Modules\File\Contracts;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
+use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 interface IFileRepository
@@ -12,5 +12,5 @@ interface IFileRepository
      * @param  UploadedFile[]  $files
      * @return Media[]
      */
-    public function attach(Model $model, array $files, string $collection = 'attachments'): array;
+    public function attach(HasMedia $model, array $files, string $collection = 'attachments'): array;
 }

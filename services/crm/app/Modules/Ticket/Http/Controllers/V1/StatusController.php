@@ -49,6 +49,13 @@ class StatusController extends Controller
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(
+                            property: 'data',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'replied_at', type: 'string', format: 'date-time', nullable: true, example: '2026-03-12T12:00:00Z'),
+                            ]
+                        ),
                         new OA\Property(property: 'message', type: 'string', example: 'Статус заявки обновлен'),
                     ]
                 )
@@ -74,8 +81,11 @@ class StatusController extends Controller
     {
         $status = TicketStatus::from($request->validated('status'));
 
-        $this->ticketService->changeStatus($id, $status);
+        $repliedAt = $this->ticketService->changeStatus($id, $status);
 
-        return $this->success(null, 'Статус заявки обновлен');
+        return $this->success(
+            ['replied_at' => $repliedAt?->toIso8601String()],
+            'Статус заявки обновлен'
+        );
     }
 }

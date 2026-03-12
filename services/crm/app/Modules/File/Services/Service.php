@@ -3,7 +3,6 @@
 namespace App\Modules\File\Services;
 
 use App\Modules\File\Contracts\IFileRepository;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -17,7 +16,7 @@ class Service
      * @param  UploadedFile[]  $files
      * @return Media[]
      */
-    public function attach(Model $model, array $files, string $collection = 'attachments'): array
+    public function attach(\Spatie\MediaLibrary\HasMedia $model, array $files, string $collection = 'attachments'): array
     {
         return $this->repo->attach($model, $files, $collection);
     }

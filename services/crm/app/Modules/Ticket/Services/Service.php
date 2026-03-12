@@ -11,7 +11,7 @@ use App\Modules\Ticket\Enums\TicketStatus;
 use App\Modules\Ticket\Exceptions\TicketNotFound;
 use App\Modules\Ticket\Exceptions\TooManyTicketsException;
 use App\Modules\Ticket\Models\Ticket;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class Service
@@ -70,17 +70,19 @@ class Service
         return $this->ticketRepo->getStatistics();
     }
 
-    public function getList(array $filters): LengthAwarePaginator
+    public function getList(array $filters): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         return $this->ticketRepo->paginateWithFilters($filters);
     }
 
-    public function changeStatus(int $id, TicketStatus $status): void
+    public function changeStatus(int $id, TicketStatus $status): ?Carbon
     {
-        $updated = $this->ticketRepo->updateStatus($id, $status);
+        [$updated, $repliedAt] = $this->ticketRepo->updateStatus($id, $status);
 
         if (! $updated) {
             throw new TicketNotFound('Заявка не найдена или статус не обновлен');
         }
+
+        return $repliedAt;
     }
 }
