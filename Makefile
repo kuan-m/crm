@@ -58,7 +58,6 @@ dev-init: infra/development/.env services/crm/.env
 	$(MAKE) dev-prepare
 	$(APP) composer install
 	$(APP) php $(APP_PATH)/artisan migrate --force
-	$(APP) php $(APP_PATH)/artisan optimize:clear
 	$(APP) php $(APP_PATH)/artisan key:generate --force
 	$(DC) up -d
 	$(APP) php $(APP_PATH)/artisan migrate --seed --force
@@ -68,7 +67,6 @@ prod-init: infra/production/.env services/crm/.env
 	$(DC_PROD) up -d
 	$(MAKE) prod-prepare
 	$(APP_PROD) composer install --no-dev --optimize-autoloader
-	$(APP_PROD) php $(APP_PATH)/artisan optimize:clear
 	$(APP_PROD) php $(APP_PATH)/artisan key:generate --force
 	$(DC_PROD) up -d
 	$(APP_PROD) php $(APP_PATH)/artisan migrate --force
