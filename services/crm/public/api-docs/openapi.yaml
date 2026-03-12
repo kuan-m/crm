@@ -1,0 +1,395 @@
+openapi: 3.0.0
+info:
+  title: 'CRM API'
+  description: 'API документация'
+  version: 1.0.0
+servers:
+  -
+    url: /api
+    description: 'Главный API сервер'
+paths:
+  /v1/tickets:
+    post:
+      tags:
+        - Tickets
+      summary: 'Создать новую заявку'
+      operationId: f3a38897c0e1a1339c44e01df39a032c
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTicketRequest'
+      responses:
+        '201':
+          description: 'Заявка успешно создана'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { $ref: '#/components/schemas/TicketResource' }
+                  message: { type: string, example: 'Заявка успешно создана' }
+                type: object
+        '422':
+          description: 'Ошибка валидации'
+        '429':
+          description: 'Слишком много заявок'
+  '/v1/tickets/{id}':
+    get:
+      tags:
+        - Tickets
+      summary: 'Просмотреть детали заявки'
+      operationId: 3f02f44bf8876dc0f2c5eca0a3062549
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Детали заявки'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { $ref: '#/components/schemas/TicketResource' }
+                  message: { type: string, example: 'Детали заявки' }
+                type: object
+        '404':
+          description: 'Заявка не найдена'
+  /v1/tickets/statistics:
+    get:
+      tags:
+        - Tickets
+      summary: 'Получить статистику заявок (сутки, неделя, месяц)'
+      operationId: c9b80bd894de5e5f17039b07df78ac55
+      responses:
+        '200':
+          description: Статистика
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { $ref: '#/components/schemas/StatisticsResource' }
+                  message: { type: string, example: 'Статистика заявок' }
+                type: object
+  '/v1/tickets/{id}/status':
+    patch:
+      tags:
+        - Tickets
+      summary: 'Обновить статус заявки'
+      operationId: 6136433ab6c2e4384eb1583de123e56c
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID заявки'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                status:
+                  description: 'ID нового статуса (1 - Новая, 2 - В процессе, 3 - Обработана)'
+                  type: integer
+                  enum: [1, 2, 3]
+              type: object
+      responses:
+        '200':
+          description: 'Статус заявки успешно обновлен'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { properties: { replied_at: { type: string, format: date-time, example: '2026-03-12T12:00:00Z', nullable: true } }, type: object }
+                  message: { type: string, example: 'Статус заявки обновлен' }
+                type: object
+        '422':
+          description: 'Ошибка валидации'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '404':
+          description: 'Заявка не найдена'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '401':
+          description: Неавторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        -
+          sanctum: []
+  '/v1/tickets/{ticket}/files':
+    post:
+      tags:
+        - Tickets
+      summary: 'Загрузить файлы к заявке'
+      operationId: dcf05e70adb96e99e818e7f815f72a41
+      parameters:
+        -
+          name: ticket
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadFileRequest'
+      responses:
+        '201':
+          description: 'Файлы успешно загружены'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { type: array, items: { $ref: '#/components/schemas/FileResource' } }
+                  message: { type: string, example: 'Файлы успешно загружены' }
+                type: object
+        '404':
+          description: 'Заявка не найдена'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '422':
+          description: 'Ошибка валидации'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+components:
+  schemas:
+    ValidationErrorResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 'Validation failed.'
+        errors:
+          type: object
+          example:
+            email:
+              - 'Введите корректный адрес электронной почты.'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      type: object
+    TooManyRequestsResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 'Too many requests.'
+      type: object
+    NotFoundResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 'Resource not found.'
+      type: object
+    UnauthorizedResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 'Unauthorized Request.'
+      type: object
+    ForbiddenResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Forbidden.
+      type: object
+    ServerErrorResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 'An unexpected error occurred.'
+        details:
+          type: string
+          example: null
+          nullable: true
+      type: object
+    BaseResponse:
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Операция выполнена успешно'
+      type: object
+    CustomerResource:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Иван Иванов'
+        email:
+          type: string
+          example: ivan@example.com
+        phone:
+          type: string
+          example: '+79991234567'
+      type: object
+    UploadFileRequest:
+      required:
+        - files
+      properties:
+        'files[]':
+          description: 'Массив загружаемых файлов'
+          type: array
+          items:
+            type: string
+            format: binary
+      type: object
+    FileResource:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: invoice
+        file_name:
+          type: string
+          example: invoice.pdf
+        mime_type:
+          type: string
+          example: application/pdf
+        size:
+          type: integer
+          example: 204800
+        url:
+          type: string
+          example: 'https://example.com/storage/1/invoice.pdf'
+      type: object
+    TicketStatus:
+      description: 'ID статуса: 1 - Новый, 2 - В работе, 3 - Обработан'
+      type: integer
+      example: 1
+      enum:
+        - 1
+        - 2
+        - 3
+    TicketStatusLabel:
+      description: 'Человекочитаемый статус'
+      type: string
+      example: Новый
+      enum:
+        - New
+        - InProcess
+        - Processed
+    CreateTicketRequest:
+      title: 'Create Ticket Request'
+      required:
+        - name
+        - phone
+        - email
+        - subject
+        - text
+      properties:
+        name:
+          type: string
+          example: 'Куанышбек Мыкыев'
+        phone:
+          type: string
+          example: '+79654444444'
+        email:
+          type: string
+          format: email
+          example: kuan@example.com
+        subject:
+          type: string
+          example: 'Проблема с оплатой'
+        text:
+          type: string
+          example: 'Не могу оплатить заказ через сайт'
+      type: object
+    StatisticsResource:
+      properties:
+        today:
+          type: integer
+          example: 5
+        week:
+          type: integer
+          example: 25
+        month:
+          type: integer
+          example: 100
+      type: object
+    TicketResource:
+      properties:
+        id:
+          type: integer
+          example: 1
+        subject:
+          type: string
+          example: 'Проблема с оплатой'
+        text:
+          type: string
+          example: 'Не могу оплатить заказ'
+        status:
+          $ref: '#/components/schemas/TicketStatus'
+        status_label:
+          $ref: '#/components/schemas/TicketStatusLabel'
+        created_at:
+          type: string
+          format: date-time
+        replied_at:
+          type: string
+          format: date-time
+          nullable: true
+        customer:
+          oneOf:
+            -
+              $ref: '#/components/schemas/CustomerResource'
+          nullable: true
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileResource'
+          nullable: true
+      type: object
+tags:
+  -
+    name: Tickets
+    description: Tickets

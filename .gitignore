@@ -1,0 +1,30 @@
+tmp
+.env
+bin/
+docs/swagger.json
+docs/swagger.yaml
+vendor/
+
+# Logs
+logs
+*.log
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Build
+build/
+
+# Cursor
+.cursorrules
+
+# Secrets
+secrets.yaml
