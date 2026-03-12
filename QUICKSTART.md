@@ -6,8 +6,8 @@ make dev-init
 ```
 
 **2. Доступ к проекту:**
-- Приложение: [http://localhost:8080](http://localhost:8080)
-- Swagger документация (после генерации): [http://localhost:8080/swagger](http://localhost:8080/swagger)
+- Приложение: [http://localhost:8085](http://localhost:8085)
+- Swagger документация (после генерации): [http://localhost:8085/swagger](http://localhost:8085/swagger)
 
 ---
 
