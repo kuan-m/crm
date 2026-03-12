@@ -178,7 +178,7 @@ pint:
 	$(APP) $(APP_PATH)/vendor/bin/pint
 
 phpstan:
-	$(APP) $(APP_PATH)/vendor/bin/phpstan analyse app config database routes tests
+	$(APP) $(APP_PATH)/vendor/bin/phpstan analyse -c $(APP_PATH)/phpstan.neon --memory-limit=2G
 
 swagger:
 	$(APP) sh -lc 'cd $(APP_PATH) && mkdir -p public/api-docs && ./vendor/bin/openapi --format yaml -o public/api-docs/openapi.yaml app routes'

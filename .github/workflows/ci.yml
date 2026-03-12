@@ -52,7 +52,7 @@ jobs:
 
     - name: Статический анализ (PHPStan)
       working-directory: services/crm
-      run: ./vendor/bin/phpstan analyse --memory-limit=2G
+      run: ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=2G
 
     - name: Запуск миграций и сидов
       working-directory: services/crm
