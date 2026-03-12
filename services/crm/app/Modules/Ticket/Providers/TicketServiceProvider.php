@@ -19,9 +19,7 @@ class TicketServiceProvider extends ServiceProvider
     {
         $this->app->bind(
             ITicketRepository::class,
-            $this->app->runningUnitTests()
-                ? InMemTicketRepository::class
-                : EloquentTicketRepository::class
+            EloquentTicketRepository::class
         );
 
         $this->app->bind(
