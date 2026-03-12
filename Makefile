@@ -101,7 +101,8 @@ dev-prepare:
 	chown -R $(HOST_UID):$(HOST_GID) \
 	$(APP_PATH)/storage \
 	$(APP_PATH)/bootstrap/cache \
-	$(APP_PATH)/vendor'
+	$(APP_PATH)/vendor \
+	$(APP_PATH)/.env'
 
 prod-prepare:
 	$(DC_PROD) exec --user root app sh -lc 'mkdir -p \
@@ -114,7 +115,8 @@ prod-prepare:
 	chown -R $(HOST_UID):$(HOST_GID) \
 	$(APP_PATH)/storage \
 	$(APP_PATH)/bootstrap/cache \
-	$(APP_PATH)/vendor'
+	$(APP_PATH)/vendor \
+	$(APP_PATH)/.env'
 
 
 # === Down ===
