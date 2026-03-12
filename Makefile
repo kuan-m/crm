@@ -57,6 +57,7 @@ dev-init: infra/development/.env services/crm/.env
 	$(DC) up -d
 	$(MAKE) dev-prepare
 	$(APP) composer install
+	$(APP) php $(APP_PATH)/artisan migrate --force
 	$(APP) php $(APP_PATH)/artisan optimize:clear
 	$(APP) php $(APP_PATH)/artisan key:generate --force
 	$(DC) up -d
