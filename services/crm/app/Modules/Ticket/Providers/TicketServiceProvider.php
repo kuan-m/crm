@@ -6,7 +6,6 @@ use App\Modules\Customer\Contracts\ICustomerRepository;
 use App\Modules\Customer\Repositories\EloquentCustomerRepository;
 use App\Modules\Ticket\Contracts\ITicketRepository;
 use App\Modules\Ticket\Repositories\EloquentTicketRepository;
-use App\Modules\Ticket\Repositories\InMemTicketRepository;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
